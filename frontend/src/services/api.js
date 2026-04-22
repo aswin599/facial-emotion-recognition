@@ -78,4 +78,104 @@ export const authAPI = {
   updateProfile: (payload) => put('/auth/profile', payload),
 };
 
-export default { get, post, put, del };
+// ── Prediction endpoints ──────────────────────────────────────────────────────
+
+export const predictionAPI = {
+  /**
+   * Predict emotion from image file upload.
+   * Returns { success, message, data: { emotion, confidence, ... } }
+   */
+  predictFromImage: (formData) => {
+    const token = getToken();
+    return fetch(`${API}/predict/image`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData,
+    }).then(res => res.json());
+  },
+
+  /**
+   * Predict emotion from webcam frame (base64).
+   * Returns { success, data: { emotion, confidence, ... } }
+   */
+  predictFromWebcam: (frameData) => post('/predict/webcam', { frame: frameData }),
+};
+
+// ── Consent endpoints ─────────────────────────────────────────────────────────
+
+export const consentAPI = {
+  /**
+   * Get current user's consent settings
+   * Returns { success, data: { cameraConsent, storageConsent } }
+   */
+  getConsent: () => get('/consent'),
+
+  /**
+   * Update consent settings
+   * Returns { success, data: { cameraConsent, storageConsent } }
+   */
+  updateConsent: (cameraConsent, storageConsent) => 
+    put('/consent', { cameraConsent, storageConsent }),
+
+  /**
+   * Withdraw all consent
+   */
+  withdrawConsent: () => post('/consent/withdraw'),
+};
+
+export const todoAPI = {
+  getTodos: () => get('/todos'),
+  createTodo: (title) => post('/todos', { title }),
+  updateTodo: (todoId, payload) => put(`/todos/${todoId}`, payload),
+  deleteTodo: (todoId) => del(`/todos/${todoId}`),
+};
+
+// ── Admin endpoints ───────────────────────────────────────────────────────────
+
+export const adminAPI = {
+  /**
+   * Get system-wide statistics (total users, predictions, etc.)
+   * Returns { success, data: { users, predictions, emotionDistribution } }
+   */
+  getSystemStats: () => get('/admin/stats'),
+
+  /**
+   * Get paginated list of all users with optional search
+   * Returns { success, data: { users, total, page, pages } }
+   */
+  getUsers: (page = 1, limit = 20, search = '') =>
+    get(`/admin/users?page=${page}&limit=${limit}${search ? `&search=${encodeURIComponent(search)}` : ''}`),
+
+  /**
+   * Update user status (activate/deactivate)
+   * Returns { success, message, data: user }
+   */
+  updateUserStatus: (userId, isActive) =>
+    put(`/admin/users/${userId}/status`, { isActive }),
+
+  /**
+   * Get audit logs with filtering and pagination
+   * Returns { success, data: { logs, total, page, pages } }
+   */
+  getLogs: (filters = {}) => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') params.append(key, value);
+    });
+    return get(`/admin/logs${params.toString() ? '?' + params.toString() : ''}`);
+  },
+
+  /**
+   * Get audit statistics for a given time period
+   * Returns { success, data: { ... } }
+   */
+  getLogStats: (days = 30) => get(`/admin/logs/stats?days=${days}`),
+
+  /**
+   * Get inference service health and configuration status
+   * Returns { success, data: { health, config } }
+   */
+  getInferenceStatus: () => get('/admin/inference/status'),
+};

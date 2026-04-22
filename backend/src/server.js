@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const consentRoutes = require('./routes/consent');
 const predictionRoutes = require('./routes/prediction');
 const analyticsRoutes = require('./routes/analytics');
+const todoRoutes = require('./routes/todos');
 const adminRoutes = require('./routes/admin');
 
 // Initialize express app
@@ -56,6 +57,7 @@ app.use(`/api/${API_VERSION}/auth`, authRoutes);
 app.use(`/api/${API_VERSION}/consent`, consentRoutes);
 app.use(`/api/${API_VERSION}/predict`, predictionRoutes);
 app.use(`/api/${API_VERSION}/analytics`, analyticsRoutes);
+app.use(`/api/${API_VERSION}/todos`, todoRoutes);
 app.use(`/api/${API_VERSION}/admin`, adminRoutes);
 
 // 404 handler

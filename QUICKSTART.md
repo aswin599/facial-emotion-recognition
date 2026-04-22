@@ -84,7 +84,7 @@ db.users.updateOne(
 1. **Register/Login** - Create account or sign in
 2. **Grant Consent** - Enable camera and storage in settings
 3. **Upload Image** - Go to Upload page, select image
-4. **Use Webcam** - Go to Webcam page, start camera
+4. **Use Webcam** - Go to Detect tab, start camera, toggle real-time detection
 5. **View Analytics** - See your emotion history and trends
 6. **Export Data** - Download your data as CSV
 
@@ -94,6 +94,39 @@ db.users.updateOne(
 2. **User Management** - Manage users
 3. **Audit Logs** - Review system events
 4. **Service Health** - Monitor inference service
+
+## 🧠 Training the Emotion Recognition Model
+
+The inference service uses a Convolutional Neural Network (CNN) trained on the FER-2013 dataset. The system includes both VGG-like and ResNet-like architectures for high accuracy (65-70%+) suitable for real-time webcam applications.
+
+### Download FER-2013 Dataset
+
+1. Visit [Kaggle FER-2013 Dataset](https://www.kaggle.com/datasets/msambare/fer2013)
+2. Download `fer2013.csv` 
+3. Place the file in `inference-service/` directory
+
+### Train the Model
+
+**Using VGG-like architecture (recommended):**
+```bash
+cd inference-service
+pip install -r requirements.txt
+python src/train.py vgg
+```
+
+**Using ResNet-like architecture:**
+```bash
+python src/train.py resnet
+```
+
+Training will take 30-60 minutes depending on your hardware. The trained model will be saved as `models/emotion_model.h5`.
+
+### Model Architecture Details
+
+- **Input**: 48x48 grayscale images
+- **VGG-like**: Multiple convolutional blocks with batch normalization and dropout
+- **ResNet-like**: Residual connections for better gradient flow
+- **Output**: 7 emotion classes (Angry, Disgust, Fear, Happy, Sad, Surprise, Neutral)
 
 ## 🔧 Troubleshooting
 

@@ -135,6 +135,21 @@
   z-index: -1;
 }
 
+.light-mode .auth-card::after {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.light-mode .auth-card::before {
+  background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(6,182,212,0.15), rgba(245,158,11,0.08), rgba(124,58,237,0.25));
+}
+
+.light-mode .auth-logo,
+.light-mode .auth-card,
+.light-mode .auth-nav,
+.light-mode .auth-container {
+  color: #0f172a;
+}
+
 /* ── CARD HEADER ── */
 .auth-card-header {
   text-align: center;

@@ -1,9 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import Dashboard from './pages/DashboardNew';
+import AdminDashboard from './pages/AdminDashboard';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -14,66 +18,26 @@ const ProtectedRoute = ({ children }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#060612',
-      color: '#f0eeff',
-      fontFamily: 'Syne, sans-serif',
-      fontSize: '1.1rem',
-      gap: '12px'
+      background: '#0a0a0f',
+      color: '#10b981',
+      fontFamily: 'JetBrains Mono, monospace',
+      fontSize: '0.9rem',
+      gap: '12px',
+      textTransform: 'uppercase',
+      letterSpacing: '0.1em'
     }}>
       <span style={{
-        width: 20, height: 20,
-        border: '2px solid rgba(124,58,237,0.3)',
-        borderTopColor: '#7c3aed',
-        borderRadius: '50%',
+        width: 16, height: 16,
+        border: '3px solid #1e1e2e',
+        borderTopColor: '#10b981',
+        borderRadius: 0,
         display: 'inline-block',
-        animation: 'spin 0.8s linear infinite'
+        animation: 'spin 0.6s linear infinite'
       }} />
-      Loading...
+      Loading System...
     </div>
   );
   return isAuthenticated ? children : <Navigate to="/login" replace />;
-};
-
-// Dashboard placeholder
-const DashboardPlaceholder = () => {
-  const { user, logout } = useAuth();
-  return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#060612',
-      color: '#f0eeff',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: 'Syne, sans-serif',
-      gap: '20px',
-      textAlign: 'center',
-      padding: '20px'
-    }}>
-      <div style={{ fontSize: '4rem' }}>🎭</div>
-      <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>Welcome, {user?.name}!</h1>
-      <p style={{ color: 'rgba(240,238,255,0.6)', maxWidth: 400 }}>
-        Your emotion recognition dashboard is ready. Connect your backend to start analyzing.
-      </p>
-      <button
-        onClick={logout}
-        style={{
-          padding: '12px 28px',
-          background: 'rgba(124,58,237,0.2)',
-          border: '1px solid rgba(124,58,237,0.4)',
-          borderRadius: '12px',
-          color: '#f0eeff',
-          cursor: 'pointer',
-          fontFamily: 'Syne, sans-serif',
-          fontSize: '0.95rem',
-          marginTop: '8px'
-        }}
-      >
-        Sign Out
-      </button>
-    </div>
-  );
 };
 
 function AppRoutes() {
@@ -86,7 +50,7 @@ function AppRoutes() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <DashboardPlaceholder />
+            <Dashboard />
           </ProtectedRoute>
         }
       />
@@ -99,9 +63,12 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ThemeToggle />
+          <AppRoutes />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
